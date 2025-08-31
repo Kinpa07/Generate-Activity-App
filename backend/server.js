@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 // Routes
-app.use("/api/activities", activityRoutes);
+app.use("/api/activities", activityRoutes); // includes generate, like, dislike
 app.use("/api/auth", authRoutes);
 
 // Error handler
@@ -31,4 +31,3 @@ connectDB().then(() => {
     console.log(`Server is running on port ${PORT}`);
   });
 });
-
