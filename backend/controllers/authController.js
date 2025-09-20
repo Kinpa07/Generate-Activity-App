@@ -4,6 +4,7 @@ const User = require("../models/Users");
 const crypto = require("crypto");
 const transporter = require("../config/mailer");
 
+
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
