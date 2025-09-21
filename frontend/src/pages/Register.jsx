@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User } from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
+import { apiFetch } from "../lib/api";  
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -32,20 +33,14 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+     
+      await apiFetch("/api/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
       // Show success message
-      setSuccess("✅ Successful registration! You will be redirected to login shortly.");
+      setSuccess("Successful registration! You will be redirected to login shortly.");
       setName("");
       setEmail("");
       setPassword("");

@@ -2,38 +2,41 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail } from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
+import { apiFetch } from "../lib/api";  
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!email) {
-    setMessage("Email is required.");
-    return;
-  }
-  setMessage("");
-
-  try {
-    const res = await fetch("http://localhost:5000/api/auth/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-
-    // Show generic message always
-    let text = data.message || "If this email is registered, a reset link has been created.";
-    // For dev: if resetUrl is returned, show it as a clickable link
-    if (data.resetUrl) {
-      text += ` — Dev link: ${data.resetUrl}`;
+    e.preventDefault();
+    if (!email) {
+      setMessage("Email is required.");
+      return;
     }
-    setMessage(text);
-  } catch (err) {
-    setMessage("Something went wrong. Please try again.");
-  }
-};
+    setMessage("");
+
+    try {
+      const data = await apiFetch("/api/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      // Always show a generic message
+      let text =
+        data.message ||
+        "If this email is registered, a reset link has been created.";
+
+      // For dev: if resetUrl is returned, show it
+      if (data.resetUrl) {
+        text += ` — Dev link: ${data.resetUrl}`;
+      }
+
+      setMessage(text);
+    } catch (err) {
+      setMessage("Something went wrong. Please try again.");
+    }
+  };
 
   return (
     <AuthLayout title="Forgot Password">
@@ -53,7 +56,11 @@ export default function ForgotPassword() {
           />
         </div>
 
-        {message && <p className="text-sm lg:text-base text-[var(--color-accent2)]">{message}</p>}
+        {message && (
+          <p className="text-sm lg:text-base text-[var(--color-accent2)]">
+            {message}
+          </p>
+        )}
 
         <button
           type="submit"

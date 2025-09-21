@@ -25,7 +25,10 @@ const generateActivity = async (req, res, next) => {
     if (type) dbFilter.type = type;
 
     // Exclude already liked/disliked
-    dbFilter._id = { $nin: [...user.likedActivities, ...user.dislikedActivities] };
+    const likedIds = user.likedActivities.map((item) => item.activity);
+    const dislikedIds = user.dislikedActivities;
+
+    dbFilter._id = { $nin: [...likedIds, ...dislikedIds] };
 
     // --- Try random existing activity
     let activity = await Activity.aggregate([
@@ -68,7 +71,7 @@ const generateActivity = async (req, res, next) => {
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.9, 
+        temperature: 0.9,
       });
 
       const raw = response.choices[0].message.content;
@@ -96,7 +99,9 @@ const generateActivity = async (req, res, next) => {
               : generatedActivity.groupSize === "3-5"
               ? "a small group of friends"
               : "a large group"
-          } enjoying ${generatedActivity.name}. ${generatedActivity.description}.
+          } enjoying ${generatedActivity.name}. ${
+          generatedActivity.description
+        }.
           Scene type: ${
             generatedActivity.type === "indoor" ? "indoors" : "outdoors"
           }.
@@ -136,4 +141,44 @@ const generateActivity = async (req, res, next) => {
   }
 };
 
-module.exports = { generateActivity };
+
+// Generate a plan for a specific activity
+const planActivity = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const activity = await Activity.findById(id);
+
+    if (!activity) {
+      return res.status(404).json({ error: "Activity not found" });
+    }
+
+    // Prompt for AI planning
+    const prompt = `
+      Create a detailed step-by-step plan for the following activity:
+      - Name: ${activity.name}
+      - Description: ${activity.description}
+
+      The plan should include:
+      1. Preparation (what to bring/do before starting)
+      2. Suggested location/setting
+      3. Step-by-step execution
+      4. Optional tips for making it more fun
+      Keep it realistic, concise, and easy to follow.
+    `;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+    });
+
+    const plan = response.choices[0].message.content;
+
+    res.json({ activityId: id, plan });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+module.exports = { generateActivity, planActivity };

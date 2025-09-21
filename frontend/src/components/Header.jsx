@@ -1,8 +1,8 @@
-import { LogOut, Heart } from "lucide-react";
+import { LogOut, Heart, Home as HomeIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-dark.png"; // logo includes "Pickly"
 
-export default function Header({ user, onLogout }) {
+export default function Header({ user, onLogout, context }) {
   const navigate = useNavigate();
   const firstName = user?.name ? user.name.split(" ")[0] : "";
 
@@ -11,13 +11,13 @@ export default function Header({ user, onLogout }) {
       <div className="max-w-6xl mx-auto flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4">
         {/* Clickable Logo */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
           className="flex items-center transition-transform duration-200 hover:scale-105 hover:opacity-90 cursor-pointer focus:outline-none"
         >
           <img
             src={logo}
             alt="Pickly Logo"
-            className="h-14 sm:h-16 lg:h-24 xl:h-28 w-auto"
+            className="h-16 sm:h-20 lg:h-24 xl:h-28 w-auto"
           />
         </button>
 
@@ -29,15 +29,25 @@ export default function Header({ user, onLogout }) {
             </span>
           )}
 
-          {/* Likes button with gradient border */}
+          {/* Contextual button */}
           <div className="p-[2px] rounded-lg bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">
-            <button
-              onClick={() => navigate("/likes")}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-bg)] text-[var(--color-text)] hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-600 hover:text-white transition-all duration-300"
-            >
-              <Heart className="w-4 h-4" />
-              <span className="hidden sm:inline">Likes</span>
-            </button>
+            {context === "home" ? (
+              <button
+                onClick={() => navigate("/likes")}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-bg)] text-[var(--color-text)] hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-600 hover:text-white transition-all duration-300"
+              >
+                <Heart className="w-4 h-4" />
+                <span className="hidden sm:inline">Likes</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/home")}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--color-bg)] text-[var(--color-text)] hover:bg-gradient-to-r hover:from-pink-500 hover:to-purple-600 hover:text-white transition-all duration-300"
+              >
+                <HomeIcon className="w-4 h-4" />
+                <span className="hidden sm:inline">Home</span>
+              </button>
+            )}
           </div>
 
           {/* Logout button with gradient border */}

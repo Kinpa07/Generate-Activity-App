@@ -1,8 +1,8 @@
 const express = require("express");
 
-const { generateActivity } = require("../controllers/activityController");
+const { generateActivity, planActivity } = require("../controllers/activityController");
 
-const { likeActivity, dislikeActivity } = require("../controllers/interactionController");
+const { likeActivity, dislikeActivity, markCompleted } = require("../controllers/interactionController");
 
 const {getLikedActivities} = require("../controllers/userController");
 
@@ -18,5 +18,10 @@ router.get("/liked", protect, getLikedActivities);
 router.put("/like/:id", protect, likeActivity);
 
 router.put("/dislike/:id", protect, dislikeActivity);
+
+router.put("/completed/:id", protect, markCompleted);
+
+router.post("/planner/:id", protect, planActivity);
+
 
 module.exports = router;

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Lock } from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
+import { apiFetch } from "../lib/api"; 
 
 export default function ResetPassword() {
   const [params] = useSearchParams();
@@ -23,13 +24,10 @@ export default function ResetPassword() {
 
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/auth/reset-password", {
+      await apiFetch("/api/auth/reset-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Reset failed");
 
       setSuccess("✅ Password updated! Redirecting to login…");
       setTimeout(() => navigate("/"), 2500);

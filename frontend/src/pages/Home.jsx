@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Heart, X } from "lucide-react";
 import TinderCard from "react-tinder-card";
+import { apiFetch } from "../lib/api";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -30,7 +31,7 @@ export default function Home() {
     }
     setUser({ name, email });
 
-    fetchNextActivity(token, filters);
+    fetchNextActivity(filters);
   }, [navigate]);
 
   const handleLogout = () => {
@@ -43,16 +44,11 @@ export default function Home() {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const fetchNextActivity = async (token, filters) => {
+  const fetchNextActivity = async (filters) => {
     try {
       setLoading(true);
       const query = new URLSearchParams(filters).toString();
-      const res = await fetch(`http://localhost:5000/api/activities?${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Failed to fetch activity");
-
-      const data = await res.json();
+      const data = await apiFetch(`/api/activities?${query}`); 
       setCards((prev) => [...prev, data]);
     } catch (err) {
       console.error("Error fetching activity:", err);
@@ -62,19 +58,14 @@ export default function Home() {
   };
 
   const recordSwipe = async (direction, cardId) => {
-    const token = localStorage.getItem("token");
-    if (!token || !cardId) return;
-
-    const endpoint =
-      direction === "right"
-        ? `http://localhost:5000/api/activities/like/${cardId}`
-        : `http://localhost:5000/api/activities/dislike/${cardId}`;
+    if (!cardId) return;
 
     try {
-      await fetch(endpoint, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (direction === "right") {
+        await apiFetch(`/api/activities/like/${cardId}`, { method: "PUT" });  
+      } else {
+        await apiFetch(`/api/activities/dislike/${cardId}`, { method: "PUT" }); 
+      }
     } catch (err) {
       console.error("Error recording swipe:", err);
     }
@@ -90,7 +81,7 @@ export default function Home() {
 
       // Fetch the next activity once a card is gone
       const token = localStorage.getItem("token");
-      if (token) fetchNextActivity(token, filters);
+      if (token) fetchNextActivity(filters);
     }, 500);
   };
 
@@ -103,7 +94,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
-      <Header user={user} onLogout={handleLogout} />
+      <Header user={user} onLogout={handleLogout} context="home" />
 
       <main className="flex-1 flex flex-col px-4 pt-8 pb-10 max-w-5xl mx-auto w-full">
         {/* CTA + Filters */}

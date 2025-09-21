@@ -5,6 +5,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/ResetPassword";
+import Likes from "./pages/Likes";
+
 
 export default function App() {
   return (
@@ -18,6 +20,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/likes"
+          element={
+            <ProtectedRoute>
+              <Likes />
             </ProtectedRoute>
           }
         />

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 import AuthLayout from "../components/AuthLayout";
+import { apiFetch } from "../lib/api";  
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -29,17 +30,11 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+     
+      const data = await apiFetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Login failed");
-      }
 
       // Save credentials to localStorage
       localStorage.setItem("token", data.token);
