@@ -1,12 +1,52 @@
-# React + Vite
+📌 Pickly
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Pickly is a fun activity discovery app where users can swipe through AI-generated (or database-sourced) activity ideas, like/dislike them, save favorites, and plan experiences. Think Tinder-style activity matcher — but smarter.
 
-Currently, two official plugins are available:
+🌍 Live App → https://generate-activity-app-frontend.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🚀 Features
 
-## Expanding the ESLint configuration
+🔐 Authentication – JWT-based login & protected routes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🎴 Swipe UI – Tinder-style card swiping for activities
+
+❤️ Likes & Dislikes – Save favorites, mark as completed, remove disliked
+
+🔍 Filters – Filter liked activities by price, group size, type, completed status, or search by name
+
+📅 Planner – AI-powered activity planner (takes name & description, generates structured plan)
+
+🖼️ Images – AI-generated images (via DALL·E) stored in Cloudinary
+
+🤖 Smart Generation – OpenAI creates diverse activity ideas, ensuring uniqueness & freshness
+
+📱 Responsive Design – TailwindCSS + Lucide icons for clean, modern UI
+
+🛠️ Tech Stack
+Frontend
+
+⚡ React (Vite)
+
+🎨 TailwindCSS
+
+🧭 React Router
+
+🎴 react-tinder-card
+
+🖼️ Lucide Icons
+
+Backend
+
+🌐 Node.js
+ + Express
+
+🛢️ MongoDB
+ + Mongoose
+
+☁️ Cloudinary
+ (image storage)
+
+🤖 OpenAI API
+ (activity + image generation)
+
+🔑 JWT auth middleware
